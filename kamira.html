@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>KAMIRA</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Italiana&family=Jost:wght@400;500;600&display=swap">
+<style>
+:root{--p:#F3F4F0;--s:#fff;--t:#1F2A24;--m:#6B756F;--l:#DDE0DA;--a:#2F5D50;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme=light]){--p:#121715;--s:#1B221F;--t:#EEF0EC;--m:#9AA49E;--l:#2C3531}}
+:root[data-theme=dark]{--p:#121715;--s:#1B221F;--t:#EEF0EC;--m:#9AA49E;--l:#2C3531}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--p);color:var(--t);font:400 16px/1.5 Jost,system-ui,sans-serif}
+h1,h2,.brand{font-family:Italiana,Georgia,serif;font-weight:400}
+button,input,select{font:inherit;color:inherit}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;justify-content:space-between;align-items:center;padding:12px 18px;background:var(--p);border-bottom:1px solid var(--l)}
+.brand{font-size:28px;letter-spacing:.12em;text-decoration:none;color:var(--t)}.brand img{height:34px;display:block}
+.cb,.btn{border:0;border-radius:2px;background:var(--a);color:#fff;padding:10px 18px;cursor:pointer;font-weight:500}
+.cb b{background:#fff;color:var(--a);border-radius:9px;padding:0 7px;margin-left:6px}
+.hero{padding:72px 22px;color:#fff;min-height:340px;display:flex;flex-direction:column;justify-content:flex-end;gap:10px}
+.hero h1{font-size:clamp(36px,9vw,64px);line-height:1.05;margin:0;max-width:14em}.hero p{margin:0 0 8px;max-width:30em;opacity:.92}.hero .btn{align-self:flex-start;background:#fff;color:#111}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:18px}.chips button{border:1px solid var(--l);background:var(--s);border-radius:20px;padding:6px 16px;cursor:pointer;white-space:nowrap}.chips .on{background:var(--t);color:var(--p);border-color:var(--t)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;padding:0 18px 30px;max-width:1100px;margin:auto}
+.card img,.ph{width:100%;aspect-ratio:3/4;object-fit:cover;display:block}.ph{display:grid;place-items:center;font:64px Italiana,serif;color:#fff8}
+.card h3{margin:8px 0 0;font-size:16px;font-weight:500}.card small{color:var(--m)}.card .pr{font-weight:600}
+.card button{margin-top:8px;width:100%;border:1px solid var(--t);background:none;padding:8px;cursor:pointer}.card button:disabled{opacity:.4;cursor:default}
+footer{padding:28px 18px;border-top:1px solid var(--l);color:var(--m);font-size:14px;text-align:center}footer a{color:var(--m)}
+#dr{position:fixed;inset:0 0 0 auto;width:min(420px,100%);background:var(--s);z-index:9;transform:translateX(105%);transition:transform .25s;padding:18px;overflow:auto;box-shadow:-8px 0 30px #0004}#dr.open{transform:none}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-bottom:1px solid var(--l)}
+.q button{width:28px;height:28px;border:1px solid var(--l);background:none;cursor:pointer}
+label{display:block;font-size:14px;color:var(--m);margin:10px 0 3px}
+input,select{width:100%;padding:10px;border:1px solid var(--l);background:var(--p);border-radius:2px}
+.tot{font-size:20px;font-weight:600}.x{border:0;background:none;font-size:26px;cursor:pointer;float:right}
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--t);color:var(--p);padding:10px 18px;border-radius:4px;z-index:20;display:none;max-width:90%}
+.adm{max-width:900px;margin:auto;padding:18px}.tabs{display:flex;gap:6px;overflow-x:auto;margin:14px 0}.tabs button{border:0;border-bottom:2px solid transparent;background:none;padding:8px 14px;cursor:pointer}.tabs .on{border-color:var(--a);font-weight:600}
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.stat{background:var(--s);border:1px solid var(--l);padding:14px}.stat b{display:block;font-size:24px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:110px;margin:16px 0}.bars div{flex:1;background:var(--a);min-height:3px;position:relative}.bars span{position:absolute;top:100%;left:0;right:0;text-align:center;font-size:11px;color:var(--m)}
+.box{background:var(--s);border:1px solid var(--l);padding:14px;margin:10px 0}.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sm{padding:6px 10px;border:1px solid var(--l);background:none;cursor:pointer}
+@media(prefers-reduced-motion:reduce){#dr{transition:none}}
+</style></head><body>
+<div id="app"></div><div id="dr"></div><div id="toast"></div>
+<script>
+const $=s=>document.querySelector(s),R=document.documentElement;
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>'৳'+Number(n).toLocaleString('en-US'),K='kamira_v1';
+const seed=()=>({n:1000,orders:[],cfg:{name:'KAMIRA',logo:'',banner:'',head:'Clothing made to be lived in',sub:'Men, women and kids. Delivered across Bangladesh. Pay when it arrives.',accent:'#2F5D50',theme:'auto',pin:'1234',shipIn:70,shipOut:130},
+products:[['Linen Panjabi','Men',2450,12],['Cotton Shirt','Men',1650,20],['Everyday Tee','Men',750,40],['Printed Kameez','Women',2850,10],['Soft Cotton Kurti','Women',1950,15],['Silk Scarf','Women',950,25],['Kids Play Set','Kids',1250,18],['Kids Polo','Kids',690,30]].map((a,i)=>({id:'p'+i,name:a[0],cat:a[1],price:a[2],stock:a[3],img:''}))});
+let S;try{S=JSON.parse(localStorage.getItem(K))}catch(e){}if(!S||!S.cfg)S=seed();
+const save=()=>{try{localStorage.setItem(K,JSON.stringify(S))}catch(e){toast('Storage is full. Use a smaller image.')}};
+let cat='All',view='cart',tab='dash',authed=false,cart={},last=null;
+function toast(m){const t=$('#toast');t.textContent=m;t.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>t.style.display='none',3200)}
+function applyCfg(){R.style.setProperty('--a',S.cfg.accent);S.cfg.theme==='auto'?R.removeAttribute('data-theme'):R.setAttribute('data-theme',S.cfg.theme);document.title=S.cfg.name}
+function go(){location.hash==='#admin'?adminView():shopView();applyCfg()}
+addEventListener('hashchange',go);
+function pick(cb,w,type){const i=document.createElement('input');i.type='file';i.accept='image/*';i.onchange=()=>{const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{const im=new Image();im.onload=()=>{const k=Math.min(1,w/im.width),c=document.createElement('canvas');c.width=im.width*k;c.height=im.height*k;c.getContext('2d').drawImage(im,0,0,c.width,c.height);cb(c.toDataURL(type||'image/jpeg',.75))};im.src=r.result};r.readAsDataURL(f)};i.click()}
+/* ---------- SHOP ---------- */
+function shopView(){const c=S.cfg,cats=['All',...new Set(S.products.map(p=>p.cat))],n=Object.values(cart).reduce((a,b)=>a+b,0);
+const hero=c.banner?`linear-gradient(rgba(0,0,0,.45),rgba(0,0,0,.45)),url(${c.banner}) center/cover`:`linear-gradient(135deg,var(--a),#0d1a15)`;
+const list=S.products.filter(p=>cat==='All'||p.cat===cat);
+$('#app').innerHTML=`<header class="top"><a class="brand" href="#">${c.logo?`<img src="${c.logo}" alt="${esc(c.name)}">`:esc(c.name)}</a><button class="cb" onclick="openCart()">Bag<b>${n}</b></button></header>
+<section class="hero" style="background:${hero}"><h1>${esc(c.head)}</h1><p>${esc(c.sub)}</p><button class="btn" onclick="$('#shop').scrollIntoView({behavior:'smooth'})">Shop the collection</button></section>
+<div class="chips" id="shop">${cats.map(x=>`<button class="${x===cat?'on':''}" onclick="cat='${esc(x)}';shopView()">${esc(x)}</button>`).join('')}</div>
+<div class="grid">${list.map((p,i)=>`<div class="card">${p.img?`<img src="${p.img}" alt="${esc(p.name)}">`:`<div class="ph" style="background:hsl(${i*47+100} 22% 46%)">${esc(p.name[0])}</div>`}<h3>${esc(p.name)}</h3><small>${esc(p.cat)}</small><div class="pr">${fmt(p.price)}</div><button ${p.stock<1?'disabled':''} onclick="add('${p.id}')">${p.stock<1?'Sold out':'Add to bag'}</button></div>`).join('')||'<p>No products yet.</p>'}</div>
+<footer>Cash on delivery. Dhaka ${fmt(c.shipIn)}, outside Dhaka ${fmt(c.shipOut)}.<br><a href="#admin">Store admin</a></footer>`}
+function add(id){const p=S.products.find(x=>x.id===id);if((cart[id]||0)>=p.stock){toast('Only '+p.stock+' in stock');return}cart[id]=(cart[id]||0)+1;toast(p.name+' added');shopView()}
+function openCart(){view='cart';drawer();$('#dr').classList.add('open')}
+function closeCart(){$('#dr').classList.remove('open')}
+function qty(id,d){const p=S.products.find(x=>x.id===id);cart[id]=Math.min(p.stock,(cart[id]||0)+d);if(cart[id]<1)delete cart[id];shopView();drawer()}
+const sub=()=>Object.entries(cart).reduce((a,[id,q])=>a+q*S.products.find(x=>x.id===id).price,0);
+function drawer(){const d=$('#dr'),ids=Object.keys(cart),x='<button class="x" onclick="closeCart()" aria-label="Close">×</button>';
+if(view==='done')return d.innerHTML=`${x}<h2>Order placed</h2><p>Thank you, ${esc(last.name)}. Your order <b>${last.id}</b> is confirmed. Please keep ${fmt(last.total)} ready for the delivery person. We will call ${esc(last.phone)} to confirm.</p><button class="btn" onclick="closeCart()">Keep shopping</button>`;
+if(!ids.length)return d.innerHTML=`${x}<h2>Your bag</h2><p>Your bag is empty.</p>`;
+const lines=ids.map(id=>{const p=S.products.find(y=>y.id===id);return`<div class="row"><span>${esc(p.name)}<br><small>${fmt(p.price)}</small></span><span class="q"><button onclick="qty('${id}',-1)">−</button> ${cart[id]} <button onclick="qty('${id}',1)">+</button></span></div>`}).join('');
+if(view==='cart')return d.innerHTML=`${x}<h2>Your bag</h2>${lines}<div class="row"><span>Subtotal</span><b>${fmt(sub())}</b></div><p><button class="btn" style="width:100%" onclick="view='form';drawer()">Checkout</button></p>`;
+d.innerHTML=`${x}<h2>Delivery details</h2><label>Full name</label><input id="cn" autocomplete="name"><label>Phone</label><input id="cp" inputmode="numeric" placeholder="01XXXXXXXXX" autocomplete="tel"><label>Full address</label><input id="ca" autocomplete="street-address"><label>Delivery area</label><select id="cz" onchange="tot()"><option value="in">Inside Dhaka (${fmt(S.cfg.shipIn)})</option><option value="out">Outside Dhaka (${fmt(S.cfg.shipOut)})</option></select><label>Payment</label><input value="Cash on delivery" disabled><p class="tot" id="tt"></p><button class="btn" style="width:100%" onclick="place()">Place order</button><p><button class="sm" onclick="view='cart';drawer()">Back to bag</button></p>`;tot()}
+function tot(){const e=$('#tt');if(e)e.textContent='Total '+fmt(sub()+($('#cz').value==='in'?S.cfg.shipIn:S.cfg.shipOut))}
+function place(){const g=i=>$('#'+i).value.trim(),nm=g('cn'),ph=g('cp'),ad=g('ca'),z=$('#cz').value;
+if(!nm||!/^01\d{9}$/.test(ph)||ad.length<8){toast('Enter your name, an 11-digit phone like 01XXXXXXXXX, and your full address.');return}
+const items=Object.entries(cart).map(([id,q])=>{const p=S.products.find(x=>x.id===id);return{id,name:p.name,price:p.price,cost:p.cost||0,q}}),s=sub(),sh=z==='in'?S.cfg.shipIn:S.cfg.shipOut;
+const o={id:'K'+(++S.n),date:new Date().toISOString(),name:nm,phone:ph,addr:ad,zone:z,items,sub:s,ship:sh,total:s+sh,status:'Pending'};
+items.forEach(i=>{const p=S.products.find(x=>x.id===i.id);p.stock=Math.max(0,p.stock-i.q)});S.orders.unshift(o);save();cart={};last=o;view='done';drawer();shopView()}
+/* ---------- ADMIN ---------- */
+function adminView(){closeCart();const c=S.cfg;
+if(!authed){$('#app').innerHTML=`<div class="adm" style="max-width:360px;margin-top:12vh"><h2>${esc(c.name)} admin</h2><label>PIN</label><input id="pin" type="password" inputmode="numeric"><p><button class="btn" onclick="login()">Sign in</button> <a href="#">Back to store</a></p></div>`;return}
+const T=[['dash','Dashboard'],['orders','Orders'],['prod','Products'],['look','Appearance']];
+$('#app').innerHTML=`<div class="adm"><h2>${esc(c.name)} admin</h2><div class="tabs">${T.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="tab='${t[0]}';adminView()">${t[1]}</button>`).join('')}<a href="#" style="margin-left:auto;padding:8px">View store</a></div>${({dash,orders,prod,look})[tab]()}</div>`}
+function login(){if($('#pin').value===S.cfg.pin){authed=true;adminView()}else toast('Wrong PIN')}
+let per=30;
+function prevImg(d){window.nimg=d;$('#pv').innerHTML=`<img src="${d}" alt="" style="height:70px;vertical-align:middle;margin-right:8px">`;toast('Photo ready')}
+function dash(){const from=Date.now()-per*864e5,inP=S.orders.filter(o=>new Date(o.date).getTime()>=from),bad=['Cancelled','Returned'],live=inP.filter(o=>!bad.includes(o.status)),ret=inP.filter(o=>o.status==='Returned'),q=o=>o.items.reduce((a,i)=>a+i.q,0),cost=o=>o.items.reduce((a,i)=>a+(i.cost||0)*i.q,0),
+sales=live.reduce((a,o)=>a+o.total,0),profit=live.reduce((a,o)=>a+o.sub-cost(o),0),sold=live.reduce((a,o)=>a+q(o),0),retQ=ret.reduce((a,o)=>a+q(o),0),retAmt=ret.reduce((a,o)=>a+o.total,0),canc=inP.filter(o=>o.status==='Cancelled').length,
+days=[...Array(per)].map((_,i)=>{const d=new Date(Date.now()-(per-1-i)*864e5),k=d.toDateString();return{l:d.getDate(),v:live.filter(o=>new Date(o.date).toDateString()===k).reduce((a,o)=>a+o.total,0)}}),mx=Math.max(1,...days.map(d=>d.v)),
+top={};live.forEach(o=>o.items.forEach(i=>top[i.name]=(top[i.name]||0)+i.q));const tp=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,5);
+return`<div class="tabs">${[7,30,90].map(n=>`<button class="${n===per?'on':''}" onclick="per=${n};adminView()">Last ${n} days</button>`).join('')}</div><div class="stats"><div class="stat">Total sales<b>${fmt(sales)}</b></div><div class="stat">Profit<b>${fmt(profit)}</b></div><div class="stat">Orders<b>${live.length}</b></div><div class="stat">Products sold<b>${sold}</b></div><div class="stat">Returned products<b>${retQ}</b></div><div class="stat">Returned value<b>${fmt(retAmt)}</b></div><div class="stat">Cancelled orders<b>${canc}</b></div><div class="stat">Pending now<b>${S.orders.filter(o=>o.status==='Pending').length}</b></div></div><p>Daily sales</p><div class="bars" style="gap:${per>30?1:per>7?2:8}px">${days.map((d,i)=>`<div style="height:${d.v/mx*100}%" title="${fmt(d.v)}">${i%Math.ceil(per/7)===0?`<span>${d.l}</span>`:''}</div>`).join('')}</div><div class="box"><b>Best sellers</b>${tp.map(t=>`<div class="row"><span>${esc(t[0])}</span><b>${t[1]}</b></div>`).join('')||'<p>No sales in this period.</p>'}</div><p><small>Profit = product price minus cost price (delivery fee not counted). Add each product's cost price in Products.</small></p><br>`}
+function dashOld(){const ok=S.orders.filter(o=>o.status!=='Cancelled'),sales=ok.reduce((a,o)=>a+o.total,0),days=[...Array(7)].map((_,i)=>{const d=new Date(Date.now()-(6-i)*864e5),k=d.toDateString();return{l:d.getDate(),v:ok.filter(o=>new Date(o.date).toDateString()===k).reduce((a,o)=>a+o.total,0)}}),mx=Math.max(1,...days.map(d=>d.v));
+return`<div class="stats"><div class="stat">Total sales<b>${fmt(sales)}</b></div><div class="stat">Orders<b>${S.orders.length}</b></div><div class="stat">Pending<b>${S.orders.filter(o=>o.status==='Pending').length}</b></div><div class="stat">Low stock (3 or fewer)<b>${S.products.filter(p=>p.stock<=3).length}</b></div></div><p>Sales, last 7 days</p><div class="bars">${days.map(d=>`<div style="height:${d.v/mx*100}%" title="${fmt(d.v)}"><span>${d.l}</span></div>`).join('')}</div><br>`}
+function orders(){return S.orders.length?S.orders.map(o=>`<div class="box"><b>${o.id}</b> · ${new Date(o.date).toLocaleDateString()} · <b>${fmt(o.total)}</b><br>${esc(o.name)}, ${esc(o.phone)}<br><small>${esc(o.addr)} (${o.zone==='in'?'Dhaka':'Outside Dhaka'})</small><br>${o.items.map(i=>esc(i.name)+' × '+i.q).join(', ')}<p><select onchange="setO('${o.id}',this.value)">${['Pending','Confirmed','Shipped','Delivered','Cancelled','Returned'].map(s=>`<option ${s===o.status?'selected':''}>${s}</option>`).join('')}</select></p></div>`).join(''):'<p>No orders yet. New orders appear here.</p>'}
+function setO(id,v){S.orders.find(o=>o.id===id).status=v;save();toast('Order '+id+' set to '+v)}
+function prod(){return`<div class="box"><b>Add product</b><label>Name</label><input id="pn"><div class="two"><div><label>Category</label><input id="pc" placeholder="Men, Women, Kids"></div><div><label>Price (৳)</label><input id="pp" type="number" inputmode="numeric"></div></div><div class="two"><div><label>Stock</label><input id="ps" type="number" inputmode="numeric"></div><div><label>Cost price (৳)</label><input id="pcost" type="number" inputmode="numeric"></div></div><p><span id="pv"></span><button class="sm" onclick="pick(prevImg,700)">Add product photo</button> <button class="btn" onclick="addP()">Add product</button></p></div>`+S.products.map(p=>`<div class="box">${p.img?`<img src="${p.img}" style="height:60px;float:right" alt="">`:''}<b>${esc(p.name)}</b> <small>${esc(p.cat)}</small><div class="two"><div><label>Price (৳)</label><input type="number" value="${p.price}" onchange="setP('${p.id}','price',+this.value)"></div><div><label>Stock</label><input type="number" value="${p.stock}" onchange="setP('${p.id}','stock',+this.value)"></div><div><label>Cost price (৳)</label><input type="number" value="${p.cost||0}" onchange="setP('${p.id}','cost',+this.value)"></div></div><p><button class="sm" onclick="pick(d=>{setP('${p.id}','img',d);adminView()},700)">${p.img?'Change photo':'Add photo'}</button> <button class="sm" onclick="delP('${p.id}')">Delete</button></p></div>`).join('')}
+function addP(){const n=$('#pn').value.trim(),c=$('#pc').value.trim(),pr=+$('#pp').value,st=+$('#ps').value;if(!n||!c||!pr){toast('Add name, category and price');return}S.products.push({id:'p'+Date.now(),name:n,cat:c,price:pr,stock:st||0,cost:+$('#pcost').value||0,img:window.nimg||''});window.nimg='';save();adminView();toast('Product added')}
+function setP(id,k,v){S.products.find(p=>p.id===id)[k]=v;save()}
+function delP(id){if(confirm('Delete this product?')){S.products=S.products.filter(p=>p.id!==id);save();adminView()}}
+function look(){const c=S.cfg,f=(l,k,t)=>`<label>${l}</label><input ${t||''} value="${esc(c[k])}" onchange="setC('${k}',this.value)">`;
+return`<div class="box">${f('Store name','name')}${f('Headline','head')}${f('Subtitle','sub')}<label>Main color</label><input type="color" value="${c.accent}" onchange="setC('accent',this.value)"><label>Theme</label><select onchange="setC('theme',this.value)">${['auto','light','dark'].map(t=>`<option ${t===c.theme?'selected':''}>${t}</option>`).join('')}</select><p><button class="sm" onclick="pick(d=>setC('logo',d,1),400,'image/png')">Upload logo</button> <button class="sm" onclick="pick(d=>setC('banner',d,1),1200)">Upload banner</button> <button class="sm" onclick="setC('logo','',1);setC('banner','',1)">Remove both</button></p></div><div class="box"><b>Delivery and security</b><div class="two"><div><label>Dhaka fee (৳)</label><input type="number" value="${c.shipIn}" onchange="setC('shipIn',+this.value)"></div><div><label>Outside Dhaka fee (৳)</label><input type="number" value="${c.shipOut}" onchange="setC('shipOut',+this.value)"></div></div>${f('Admin PIN','pin')}</div>`}
+function setC(k,v,re){S.cfg[k]=v;save();applyCfg();if(re)adminView();else toast('Saved')}
+go();
+</script></body></html>
